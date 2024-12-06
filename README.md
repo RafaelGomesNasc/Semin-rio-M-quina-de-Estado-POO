@@ -1,1 +1,1 @@
-# Semin-rio-M-quina-de-Estado-POO
+# Seminário de Diagramas de Máquina de Estado POO
