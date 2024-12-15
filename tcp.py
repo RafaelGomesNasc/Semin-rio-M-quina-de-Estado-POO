@@ -87,6 +87,14 @@ class Cliente:
         else:
             print("Cliente: Não pode receber FIN neste estado.")
 
+    def time_wait_timeout(self, servidor):
+        if self.estado == "TIME_WAIT":
+            if servidor.estado == "CLOSED":
+                print("Cliente: Tempo de espera encerrado.")
+                self.__set_estado("CLOSED")
+        else:
+            print("Cliente: Não pode encerrar o tempo de espera neste estado.")
+
 
 # Classe Servidor
 class Servidor:
@@ -106,8 +114,8 @@ class Servidor:
         raise AttributeError("Não é possível alterar o estado do servidor.")
 
     # Método privado para alterar o estado do servidor dentro da classe
-    def __set_estado(self, estado):
-        self.__estado = estado
+    def __set_estado(self, value):
+        self.__estado = value
 
     # Método de classe para criar um servidor padrão
     @classmethod
@@ -150,7 +158,7 @@ class Servidor:
             # verifica se o cliente está em ESTABLISHED
             if cliente.estado == "ESTABLISHED":
                 # recebe SYN-ACK e estabelece a conexão
-                print("Servidor: Recebido SYN-ACK. Conexão estabelecida.")
+                print("Servidor: Recebido ACK. Conexão estabelecida.")
                 # transição para ESTABLISHED
                 self.__set_estado("ESTABLISHED")
         else:
@@ -197,6 +205,8 @@ class Servidor:
                 print("Servidor: Recebido ACK. Conexão encerrada.")
                 # transição para CLOSED
                 self.__set_estado("CLOSED")
+                # chama o método time_wait_timeout do cliente
+                cliente.time_wait_timeout(self)
         else:
             print("Servidor: Não pode receber ACK neste estado.")
 
@@ -214,6 +224,8 @@ if __name__ == "__main__":
     s.abrir_servidor()
     print("--------------------")
     c.enviar_syn(s)
+    print("Cliente: ", c.estado)
+    print("Servidor: ", s.estado)
 
     print("--------------------")
     print("TCP 4-way handshake")
@@ -222,4 +234,6 @@ if __name__ == "__main__":
     print("Servidor: ", s.estado)
     print("--------------------")
     c.enviar_fin(s)
+    print("Cliente: ", c.estado)
+    print("Servidor: ", s.estado)
     print("--------------------")
