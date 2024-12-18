@@ -87,6 +87,7 @@ class Cliente:
         else:
             print("Cliente: Não pode receber FIN neste estado.")
 
+    # Método para tempo de espera encerrado
     def time_wait_timeout(self, servidor):
         if self.estado == "TIME_WAIT":
             if servidor.estado == "CLOSED":
